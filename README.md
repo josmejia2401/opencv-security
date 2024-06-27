@@ -1,0 +1,16 @@
+- calendario con videos
+- gestion de grabaciones
+- gestion de fotos tomadas
+- vista en vivo
+- gestion de recursos: camaras, almacenamiento
+- gestion de calendario: reproducir video grabado, fechas y calendario, controles de reproduccion,
+- alertas
+- deteccion de moviiento
+- identificacion de rostros
+- identificacion de personas con Rekognition
+- detalle de la persona identificada
+- tipos de camaras: escala grises, normal, deteccion de elementos, contraste, etc.
+- vistas por cantidad de camaras: 1 - 9 cam en una pantalla
+- visualizador multimedia
+- config: resolucion de videos (ancho x alto)
+- formato de video
