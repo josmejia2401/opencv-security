@@ -31,4 +31,8 @@ class SaveFrame:
         # save the file
         if grabbed == True:
             cv2.imwrite(p, frame.copy())
-        print('[INFO] saved {}'.format(file_name))
+        #print('[INFO] saved {}'.format(file_name))
+
+    def release(self) -> None:
+        if self._out:
+            self._out.release()

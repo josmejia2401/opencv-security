@@ -1,8 +1,8 @@
 #!/usr/bin/env python3
 #!/usr/bin/python3.12.4
 from src.opencvsecurity.models.frame_model import FrameModel
-from src.opencvsecurity.core.gui import Gui
-from src.opencvsecurity.core.camera_default import CameraDefault
+from src.opencvsecurity.core.gui.gui import Gui
+from src.opencvsecurity.core.gui.camera_default import CameraDefault
 from src.opencvsecurity.core.save_frame import SaveFrame
 
 import pathlib
@@ -31,7 +31,5 @@ class Kernel:
             video_format='MP4V'
         )
         self.save_frame = SaveFrame(options=self.options)
-        self.gui = Gui(save_frame=self.save_frame)
-        self.camera_default = CameraDefault(self.options, self.gui, self.save_frame)
-        self.camera_default.init()
-        self.gui.init(self.camera_default.on_close)
+        self.gui = Gui(options=self.options, save_frame=self.save_frame)
+        self.gui.init()
