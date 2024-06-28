@@ -4,7 +4,6 @@ from dataclasses import dataclass
 
 @dataclass
 class FrameModel:
-    source: int
     video_format: str
     frame_width: int
     frame_height: int

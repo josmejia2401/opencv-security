@@ -11,15 +11,17 @@ class Camera(ABC):
     _options: FrameModel
     _name: str
     _stream: cv2.VideoCapture
+    _source: int
 
     _frame = cv2.typing.MatLike
     _thread = threading.Thread
     _stopEvent = threading.Event
 
-    def __init__(self, options):
+    def __init__(self, source, options):
         super().__init__()
+        self._source = source
         self._options = options
-        self._name = 'stream-{}'.format(self._options.source)
+        self._name = 'stream-{}'.format(source)
         self._stream = None
 
         self._frame = None
@@ -29,7 +31,7 @@ class Camera(ABC):
     def __init_cam(self) -> None:
         if self._stream and self._stream.isOpened():
             return
-        self._stream = cv2.VideoCapture(self._options.source)
+        self._stream = cv2.VideoCapture(self._source)
         self._stream.set(cv2.CAP_PROP_FOURCC, cv2.VideoWriter_fourcc(*self._options.video_format))
         self._stream.set(cv2.CAP_PROP_FRAME_WIDTH, self._options.frame_width)
         self._stream.set(cv2.CAP_PROP_FRAME_HEIGHT, self._options.frame_height)
