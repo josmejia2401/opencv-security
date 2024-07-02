@@ -85,9 +85,6 @@ class Gui:
    
     def on_close(self):
         print('[INFO] closing ...')
-        for cam in self.cam_list:
-            try:
-                cam.on_close()
-            except: pass
+        self.dynamic_grid.on_close()
         self.root.quit()
         self.root.destroy()

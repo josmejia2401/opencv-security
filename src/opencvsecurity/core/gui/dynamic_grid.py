@@ -12,6 +12,7 @@ class DynamicGrid(tk.Frame):
     _frame = cv2.typing.MatLike
     _frame_prev = cv2.typing.MatLike
     _save_frame: SaveFrame
+    cameras: list[type[CameraDefault]]
 
 
     def __init__(self, parent, *args, **kwargs):
@@ -22,7 +23,6 @@ class DynamicGrid(tk.Frame):
         self.cameras = []
 
     def add_box(self, color=None, width=100, height=100, source = 0, options = None):
-
         bg = color if color else random.choice(("red", "orange", "green", "blue", "violet"))
         box = tk.Frame(self.text,
                        bd=1,
@@ -30,15 +30,19 @@ class DynamicGrid(tk.Frame):
                        background=bg,
                        width=width,
                        height=height)
-        
         self.boxes.append(box)
         self.text.configure(state="normal")
         self.text.window_create("end", window=box)
         self.text.configure(state="disabled")
-
-        #self.text.window_create(tk.END, window = tk.Label(self.text, text="jose")) # Example 2
-
-
-        camera_default = CameraDefault(source=source, options=options, root=box)
+        camera_default = CameraDefault(source=source, options=options, root=box, width=width, height=height)
         camera_default.init()
         self.cameras.append(camera_default)
+
+    def on_close(self):
+        print('[INFO] closing ...')
+        for cam in self.cameras:
+            try:
+                cam.on_close()
+            except: pass
+        self.quit()
+        self.destroy()

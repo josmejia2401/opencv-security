@@ -4,6 +4,8 @@ from src.opencvsecurity.models.frame_model import FrameModel
 from src.opencvsecurity.core.gui.gui import Gui
 from src.opencvsecurity.core.gui.camera_default import CameraDefault
 from src.opencvsecurity.core.cam_list import cam_list
+from src.opencvsecurity.models.video_format_model import VideoFormatModel
+
 
 import pathlib
 
@@ -22,13 +24,21 @@ class Kernel:
 
 
     def init(self) -> None:
-        self.ids_cam_list = [0, 1, 2, 3] #cam_list()
+        self.ids_cam_list = cam_list()
+        #320x240, 640x480, 800x480, 1024x600, 1024x768, 1440x900, 1920x1200, 1280x720, 1920x1080, 768x576, 720x480
         self.options = FrameModel(
-            output_path=str(pathlib.Path(__file__).parent.resolve()),
-            frame_width=320,
-            frame_height=240,
+            #output_path=str(pathlib.Path(__file__).parent.resolve()),
+            frame_width=1280,
+            frame_height=720,
             frame_fps=30,
-            video_format='MP4V'
+            #video_format='MP4V',
+            video_format=VideoFormatModel(
+                output_path=str(pathlib.Path(__file__).parent.resolve()),
+                video_format='MP4V',
+                video_height=720,
+                video_width=1280,
+                video_color=True
+            )
         )
         self.gui = Gui(options=self.options, ids_cam_list=self.ids_cam_list)
         self.gui.init()

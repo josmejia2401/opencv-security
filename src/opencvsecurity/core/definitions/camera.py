@@ -3,6 +3,7 @@
 import cv2
 from abc import ABC, abstractmethod
 import threading
+import time
 
 from src.opencvsecurity.models.frame_model import FrameModel
 
@@ -32,9 +33,9 @@ class Camera(ABC):
         if self._stream and self._stream.isOpened():
             return
         self._stream = cv2.VideoCapture(self._source)
-        self._stream.set(cv2.CAP_PROP_FOURCC, cv2.VideoWriter_fourcc(*self._options.video_format))
-        self._stream.set(cv2.CAP_PROP_FRAME_WIDTH, self._options.frame_width)
-        self._stream.set(cv2.CAP_PROP_FRAME_HEIGHT, self._options.frame_height)
+        self._stream.set(cv2.CAP_PROP_FOURCC, cv2.VideoWriter_fourcc(*self._options.video_format.video_format))
+        self._stream.set(cv2.CAP_PROP_FRAME_WIDTH, self._options.video_format.video_width)
+        self._stream.set(cv2.CAP_PROP_FRAME_HEIGHT, self._options.video_format.video_height)
         self._stream.set(cv2.CAP_PROP_FPS, self._options.frame_fps)
 
     def init_main(self) -> None:
@@ -47,6 +48,8 @@ class Camera(ABC):
         self._thread.start()
 
     def read(self) -> tuple[bool, cv2.typing.MatLike]:
+        if not self._stream.isOpened():
+            raise NameError('Error reading frame')
         grabbed, frame = self._stream.read()
         return (grabbed, frame)
 
@@ -54,6 +57,7 @@ class Camera(ABC):
         try:
             print('[INFO][{}] closing ...'.format(self._name))
             self._stopEvent.set()
+            time.sleep(1)
             self.release()
         except Exception as e:
             print(e)
