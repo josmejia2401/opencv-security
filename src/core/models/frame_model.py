@@ -1,7 +1,7 @@
 #!/usr/bin/env python3
 #!/usr/bin/python3.12.4
 from dataclasses import dataclass
-from src.opencvsecurity.models.video_format_model import VideoFormatModel
+from src.core.models.video_format_model import VideoFormatModel
 
 @dataclass
 class FrameModel:

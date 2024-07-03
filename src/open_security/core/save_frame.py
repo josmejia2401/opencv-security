@@ -1,5 +1,5 @@
 import cv2
-from src.opencvsecurity.models.frame_model import FrameModel
+from src.open_security.models.frame_model import FrameModel
 from datetime import datetime
 from os import path, rename
 from pathlib import Path

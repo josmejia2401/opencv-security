@@ -3,8 +3,8 @@
 import tkinter as tk
 import queue
 import random
-from src.opencvsecurity.core.gui.camera_default import CameraDefault
-from src.opencvsecurity.models.frame_model import FrameModel
+from src.open_security.core.gui.camera_default import CameraDefault
+from src.open_security.models.frame_model import FrameModel
 
 class DynamicGrid(tk.Frame):
     cameras: list[type[CameraDefault]]

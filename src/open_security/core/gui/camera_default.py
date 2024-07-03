@@ -4,8 +4,8 @@ import tkinter as tk
 from PIL import ImageTk, Image
 import imutils
 import queue
-from src.opencvsecurity.core.definitions.camera import Camera, cv2
-from src.opencvsecurity.models.proccess_frame_model import ProcessFrameModel
+from src.open_security.core.definitions.camera import Camera, cv2
+from src.open_security.models.proccess_frame_model import ProcessFrameModel
 
 class CameraDefault(Camera):
 

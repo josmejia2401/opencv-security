@@ -5,7 +5,7 @@ from abc import ABC, abstractmethod
 import threading
 import time
 
-from src.opencvsecurity.models.frame_model import FrameModel
+from src.core.models.frame_model import FrameModel
 
 class Camera(ABC):
 

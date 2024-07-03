@@ -2,10 +2,9 @@ import threading
 import queue
 import time
 
-from src.opencvsecurity.core.save_frame import SaveFrame
-from src.opencvsecurity.models.frame_model import FrameModel
-from src.opencvsecurity.models.proccess_frame_model import ProcessFrameModel
-
+from src.core.save_frame import SaveFrame
+from src.core.models.frame_model import FrameModel
+from src.core.models.proccess_frame_model import ProcessFrameModel
 
 class FrameWorker(threading.Thread):
     """

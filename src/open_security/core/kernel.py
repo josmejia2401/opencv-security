@@ -1,10 +1,10 @@
 #!/usr/bin/env python3
 #!/usr/bin/python3.12.4
-from src.opencvsecurity.models.frame_model import FrameModel
-from src.opencvsecurity.core.cam_list import cam_list
-from src.opencvsecurity.models.video_format_model import VideoFormatModel
-from src.opencvsecurity.core.workers.frame_worker import FrameWorker
-from src.opencvsecurity.core.gui.dynamic_grid import DynamicGrid
+from src.open_security.models.frame_model import FrameModel
+from src.open_security.core.cam_list import cam_list
+from src.open_security.models.video_format_model import VideoFormatModel
+from src.open_security.core.workers.frame_worker import FrameWorker
+from src.open_security.core.gui.dynamic_grid import DynamicGrid
 
 import tkinter as tk
 import cv2
@@ -13,7 +13,6 @@ import pathlib
 
 class Kernel:
 
-    #camera_default: CameraDefault
     options: FrameModel
     frame_worker: FrameWorker
 
