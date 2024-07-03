@@ -3,7 +3,7 @@
 import cv2
 import sys
 
-def cam_list() -> list:
+def cam_list() -> list[type[int]]:
     print(f"OpenCV version: {cv2.__version__} - Python {sys.version}")
     max_cameras = 10
     avaiable = []

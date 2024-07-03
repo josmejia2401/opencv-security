@@ -3,29 +3,29 @@
 import tkinter as tk
 from PIL import ImageTk, Image
 import imutils
-
+import queue
 from src.opencvsecurity.core.definitions.camera import Camera, cv2
-from src.opencvsecurity.core.save_frame import SaveFrame
+from src.opencvsecurity.models.proccess_frame_model import ProcessFrameModel
 
 class CameraDefault(Camera):
 
     root: tk.Frame
     panel: tk.Label
+    q: queue.Queue
 
-    _frame = cv2.typing.MatLike
-    _frame_prev = cv2.typing.MatLike
-    _save_frame: SaveFrame
-    _width: int
-    _height: int
+    frame = cv2.typing.MatLike
+    frame_prev = cv2.typing.MatLike
+    width: int
+    height: int
 
-    def __init__(self, source, options, root, width, height):
+    def __init__(self, source, options, q, root, width, height):
         super().__init__(source=source, options=options)
         self.root = root
-        self._save_frame = SaveFrame(options=options, source=source)
-        self._width = int(width - 1)
-        self._height = int(height - 1)
-        self._frame = None
-        self._frame_prev = None
+        self.width = int(width - 1)
+        self.height = int(height - 1)
+        self.q = q
+        self.frame = None
+        self.frame_prev = None
         self.panel = None
 
     def init(self) -> None:
@@ -33,22 +33,17 @@ class CameraDefault(Camera):
         
     def on_close(self):
         print('[INFO] closing ...')
-        self._save_frame.release()
         self.stop()
-        
-    def take_snapshot(self):
-        self._save_frame.save_image(True, self._frame)
 
     def video_loop(self) -> None:
         try:
-            while not self._stopEvent.is_set():
-                grabbed, self._frame = self.read()
+            while not self.stopEvent.is_set():
+                grabbed, self.frame = self.read()
                 if grabbed:
                     # frame with original dimensions to save
-                    self._save_frame.save_video(grabbed, self._frame)
-                    # frame with new dimensions to view
-                    self._frame = self.resize(self._frame)
-                    image = cv2.cvtColor(self._frame, cv2.COLOR_BGR2RGBA)
+                    self.q.put(ProcessFrameModel(frame=self.frame, source=self.source, grabbed=grabbed))
+                    self.frame = self.resize(self.frame)
+                    image = cv2.cvtColor(self.frame, cv2.COLOR_BGR2RGBA)
                     image = Image.fromarray(image)
                     image = ImageTk.PhotoImage(image=image)
                     if self.panel is None:
@@ -67,6 +62,6 @@ class CameraDefault(Camera):
         try:
             if frame is None:
                 return None
-            return cv2.resize(frame, (self._width, self._height))
+            return cv2.resize(frame, (self.width, self.height))
         except Exception as e:
-            return imutils.resize(self._frame, self._width, self._height)
+            return imutils.resize(frame, self.width, self.height)
