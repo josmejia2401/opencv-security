@@ -43,12 +43,12 @@ class Kernel:
         self.options = FrameModel(
             frame_width=1280,
             frame_height=720,
-            frame_fps=20, #30, 60, 120
+            frame_fps=10, #30, 60, 120
             video_format=VideoFormatModel(
                 output_path=str(pathlib.Path(__file__).parent.resolve()),
                 video_format='mp4v',
-                video_height=720,
-                video_width=1280,
+                video_height=480,
+                video_width=720,
                 video_color=True
             )
         )
@@ -81,18 +81,18 @@ class Kernel:
          # add a few boxes to start
         if len(self.cameras_available) == 1:
             self.dynamic_grid.add_box(width=self.screen_width, height=self.screen_height, source=0)
-        elif len(self.ids_cam_list) == 2:
+        elif len(self.cameras_available) == 2:
             width = self.screen_width/2
             height = self.screen_height
             self.dynamic_grid.add_box(width=width, height=height, source=0)
             self.dynamic_grid.add_box(width=width,height=height,source=1)
-        elif len(self.ids_cam_list) == 3:
+        elif len(self.cameras_available) == 3:
             width = self.screen_width/2 - 1
             height = self.screen_height / 2
             self.dynamic_grid.add_box(width=width, height=height, source=0)
             self.dynamic_grid.add_box(width=width, height=height, source=1)
             self.dynamic_grid.add_box(width=self.screen_width, height=height, source=2)
-        elif len(self.ids_cam_list) == 4:
+        elif len(self.cameras_available) == 4:
             width = self.screen_width/3 - 1
             height = self.screen_height/2
             self.dynamic_grid.add_box(width=width, height=height, source=0)

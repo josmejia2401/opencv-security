@@ -31,9 +31,16 @@ class Camera(ABC):
             return
         self.stream = cv2.VideoCapture(self.source)
         self.stream.set(cv2.CAP_PROP_FOURCC, cv2.VideoWriter_fourcc(*self.options.video_format.video_format))
-        self.stream.set(cv2.CAP_PROP_FRAME_WIDTH, self.options.video_format.video_width)
-        self.stream.set(cv2.CAP_PROP_FRAME_HEIGHT, self.options.video_format.video_height)
-        self.stream.set(cv2.CAP_PROP_FPS, self.options.frame_fps)
+
+        width  = self.stream.get(cv2.CAP_PROP_FRAME_WIDTH)
+        height = self.stream.get(cv2.CAP_PROP_FRAME_HEIGHT)
+        if width > self.options.frame_width or height > self.options.frame_height:
+            self.stream.set(cv2.CAP_PROP_FRAME_WIDTH, self.options.frame_width)
+            self.stream.set(cv2.CAP_PROP_FRAME_HEIGHT, self.options.frame_height)
+        
+        fps = self.stream.get(cv2.CAP_PROP_FPS)
+        if fps > self.options.frame_fps:
+            self.stream.set(cv2.CAP_PROP_FPS, self.options.frame_fps)
 
     def init_main(self) -> None:
         print('[INFO][{}] starting ...'.format(self.name))

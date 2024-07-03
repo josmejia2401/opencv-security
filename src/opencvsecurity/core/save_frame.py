@@ -3,6 +3,7 @@ from src.opencvsecurity.models.frame_model import FrameModel
 from datetime import datetime
 from os import path, rename
 from pathlib import Path
+import imutils
 
 class SaveFrame:
     out: cv2.VideoWriter
@@ -114,10 +115,16 @@ class SaveFrame:
             self.out = cv2.VideoWriter(filename=p,
                                         fourcc=fourcc,
                                         fps=self.options.frame_fps,
+                                        #frameSize=(self.options.frame_width, self.options.frame_height),
                                         frameSize=(self.options.video_format.video_width, self.options.video_format.video_height),
                                         isColor=self.options.video_format.video_color)
         if grabbed == True:
-             self.out.write(frame)
+            frame = self.resize(
+                frame=frame,
+                width=self.options.video_format.video_width,
+                height=self.options.video_format.video_height
+            )
+            self.out.write(frame)
 
     def save_image(self, grabbed: bool, frame: cv2.typing.MatLike):
         ts = datetime.now()
@@ -134,3 +141,11 @@ class SaveFrame:
             print('[INFO] saved {}'.format(self.get_file_name_video()))
             self.out.release()
             self.out = None
+
+    def resize(self, frame, width, height) -> any:
+        try:
+            if frame is None:
+                return None
+            return cv2.resize(frame, (width, height), interpolation=cv2.INTER_AREA)
+        except Exception as e:
+            return imutils.resize(frame, width, height)
