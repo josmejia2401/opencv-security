@@ -46,7 +46,7 @@ class Kernel:
             frame_fps=20, #30, 60, 120
             video_format=VideoFormatModel(
                 output_path=str(pathlib.Path(__file__).parent.resolve()),
-                video_format='MP4V',
+                video_format='mp4v',
                 video_height=720,
                 video_width=1280,
                 video_color=True
@@ -80,7 +80,7 @@ class Kernel:
     def configure_frames(self) -> None:
          # add a few boxes to start
         if len(self.cameras_available) == 1:
-            self.dynamic_grid.add_box(width=self.screen_width, height=self.screen_height,source=0)
+            self.dynamic_grid.add_box(width=self.screen_width, height=self.screen_height, source=0)
         elif len(self.ids_cam_list) == 2:
             width = self.screen_width/2
             height = self.screen_height

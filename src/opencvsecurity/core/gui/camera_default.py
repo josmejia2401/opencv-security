@@ -42,12 +42,14 @@ class CameraDefault(Camera):
                 if grabbed:
                     # frame with original dimensions to save
                     self.q.put(ProcessFrameModel(frame=self.frame, source=self.source, grabbed=grabbed))
-                    self.frame = self.resize(self.frame)
+                    #self.frame = self.resize(self.frame)
                     image = cv2.cvtColor(self.frame, cv2.COLOR_BGR2RGBA)
                     image = Image.fromarray(image)
+                    image.resize((self.width, self.height)) 
                     image = ImageTk.PhotoImage(image=image)
+
                     if self.panel is None:
-                        self.panel = tk.Label(self.root, image=image)
+                        self.panel = tk.Label(self.root, image=image, width=self.width, height=self.height)
                         self.panel.image = image
                         self.panel.pack()
                     else:
