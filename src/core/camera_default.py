@@ -9,13 +9,9 @@ class CameraDefault(Camera):
     q: queue.Queue
     frame = cv2.typing.MatLike
     frame_prev = cv2.typing.MatLike
-    width: int
-    height: int
 
-    def __init__(self, source, options, q, width, height):
+    def __init__(self, source, options, q):
         super().__init__(source=source, options=options)
-        self.width = int(width - 1)
-        self.height = int(height - 1)
         self.q = q
         self.frame = None
         self.frame_prev = None
