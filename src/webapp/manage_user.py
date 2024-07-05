@@ -17,7 +17,7 @@ class ManageUser:
             sid_list = []
             sid_list.append(sid)
             self.users[username] = ConfigUserModel(
-                dimension='640x480',
+                dimension='320x240',
                 sid=sid_list,
                 source=0,
                 username=username

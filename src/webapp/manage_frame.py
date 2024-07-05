@@ -35,17 +35,17 @@ class ManageFrame(SubWorker):
                 try:
                     if message.source != user.source:
                         continue
-                    width = 480
-                    heigth = 320
+                    width = 320
+                    heigth = 240
                     if user.dimension:
                         width = int(user.dimension.split("x")[0])
                         heigth = int(user.dimension.split("x")[1])
-                                            
+
                     frame = cv2.resize(message.frame, (width,heigth))
                     _, buffer = cv2.imencode('.jpg', frame)
                     jpg_as_text = base64.b64encode(buffer)
                     a_dict = {'frame': jpg_as_text, 'source': message.source}
-                    self.socketio.emit('message', a_dict, to=user.sid[0])
+                    self.socketio.emit('message', a_dict, to=user.sid[0], room=user.sid[0])
                 except Exception as e:
                     print("[ERROR]", e)
 
