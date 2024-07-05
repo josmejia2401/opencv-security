@@ -1,6 +1,5 @@
 from flask import Flask, request, render_template, redirect, url_for, flash, session
-from flask_cors import CORS#, cross_origin
-#from flask_login import login_required, current_user
+from flask_cors import CORS
 
 from flask_socketio import SocketIO
 from src.webapp.manage_frame import ManageFrame
@@ -20,7 +19,7 @@ def on_disconnect():
         manage_frame.manage_user.remove_session(sid=request.sid)
     else:
         manage_frame.manage_user.remove_user(username=username)
-
+        
     current_session = session._get_current_object()
     if current_session.get('logged_in', False) is False or current_session.get('username', 'Guest') != current_session:
         current_session['logged_in'] = False
@@ -38,7 +37,7 @@ def on_connect(methods=['GET', 'POST']):
     if current_session.get('logged_in', False) is False:
         return
     manage_frame.manage_user.add_user(username, request.sid)
-    print("New user sign in!\nThe users are: ", username)
+    print("========= New user sign in! =========\nThe users are: ", username)
 
 
 @socketio.on('message')
@@ -71,7 +70,6 @@ def login():
 
 @app.route('/login', methods=['POST'])
 def login_post():
-    # login code goes here
     username = request.form.get('username')
     password = request.form.get('password')
     remember = True if request.form.get('remember') else False
@@ -79,8 +77,6 @@ def login_post():
 
     current_session = session._get_current_object()
 
-    # check if the user actually exists
-    # take the user-supplied password, hash it, and compare it to the hashed password in the database
     if len(users) == 0:
         flash('Please check your login details and try again.')
         current_session['logged_in'] = False
@@ -91,7 +87,6 @@ def login_post():
     current_session['logged_in'] = True
     print('current_session.logged_in', current_session.get('logged_in', False) )
 
-    # if the above check passes, then we know the user has the right credentials
     return redirect(url_for('profile', current_session=current_session))
 
 @app.route('/signup')
@@ -142,4 +137,4 @@ def stop():
 
 if __name__ == '__main__':
     main()
-    socketio.run(app, host='0.0.0.0', port=9090, debug=True)
+    socketio.run(app, host='0.0.0.0', port=9090, debug=True, use_reloader=False)

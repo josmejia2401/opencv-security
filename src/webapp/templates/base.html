@@ -20,6 +20,12 @@
             margin-right: auto;
             width: 50%;
         }
+
+        .img {
+            max-width: 100%;
+            min-width: 350px;
+            height: auto;
+        }
     </style>
 
 </head>
@@ -79,6 +85,7 @@
                 return bytes.buffer;
             }
 
+            //const socket = io.connect(`http://192.168.20.46:9090?username=${username}`);
             const socket = io.connect(`http://localhost:9090?username=${username}`);
             const loggerElement = document.getElementById('logger')
             socket.on('connect', function (payload) {
@@ -104,31 +111,31 @@
         })()
 
 
-           /** The jQuery will trigger only at mobile viewport */
-    if (window.matchMedia("(max-width: 767px)").matches) {    
+        /** The jQuery will trigger only at mobile viewport */
+        if (window.matchMedia("(max-width: 767px)").matches) {
             const $navDropdowns = document.querySelectorAll(".navbar-item.has-dropdown");
-        if ($navDropdowns.length > 0) {
-            // HIDE THE DROP-DOWN ON THE INITIAL LOAD
-            $navDropdowns.forEach((el) => {
-                const target = el.dataset.target;
-                const $target = document.getElementById(target);
-                $target.style.display = "none";
-        
-            //Register the click event on the dropdown list
-                el.addEventListener("click", () => {
-                    // Get the target from the "data-target" attribute
+            if ($navDropdowns.length > 0) {
+                // HIDE THE DROP-DOWN ON THE INITIAL LOAD
+                $navDropdowns.forEach((el) => {
                     const target = el.dataset.target;
                     const $target = document.getElementById(target);
-    
-                    if ($target.style.display === "block") {
-                        $target.style.display = "none";
-                    } else {
-                        $target.style.display = "block";
-                    }
+                    $target.style.display = "none";
+
+                    //Register the click event on the dropdown list
+                    el.addEventListener("click", () => {
+                        // Get the target from the "data-target" attribute
+                        const target = el.dataset.target;
+                        const $target = document.getElementById(target);
+
+                        if ($target.style.display === "block") {
+                            $target.style.display = "none";
+                        } else {
+                            $target.style.display = "block";
+                        }
+                    });
                 });
-            });
+            }
         }
-}
     </script>
 </body>
 

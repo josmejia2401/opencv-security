@@ -5,7 +5,7 @@ import sys
 
 def cam_list() -> list[type[int]]:
     print(f"OpenCV version: {cv2.__version__} - Python {sys.version}")
-    max_cameras = 10
+    max_cameras = 1
     avaiable = []
     for i in range(max_cameras):
         cap = cv2.VideoCapture(i)

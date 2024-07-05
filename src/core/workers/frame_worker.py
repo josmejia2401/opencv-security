@@ -5,7 +5,7 @@ import time
 from src.core.save_frame import SaveFrame
 from src.core.models.frame_model import FrameModel
 from src.core.models.proccess_frame_model import ProcessFrameModel
-from src.core.models.subscriber_model import SubscriberModel
+from src.core.sub.sub_worker import SubWorker
 
 class FrameWorker(threading.Thread):
     """
@@ -14,7 +14,8 @@ class FrameWorker(threading.Thread):
     q: queue.Queue
     save_frame: list[type[SaveFrame]]
     options: FrameModel
-    subscribers: dict[str, list[type[SubscriberModel]]]
+    #subscribers: dict[str, list[type[SubscriberModel]]]
+    subscribers: list[type[SubWorker]]
 
     def __init__(self, q, options, *args, **kwargs):
         super().__init__(*args, **kwargs)
@@ -22,14 +23,14 @@ class FrameWorker(threading.Thread):
         self.options = options
         self.stopEvent = threading.Event()
         self.save_frame = []
-        self.subscribers = {}
+        self.subscribers = []
 
     def run(self):
         while not self.stopEvent.is_set():
             try:
                 data = self.q.get(timeout=3)
                 self.save_video(data=data)
-                self.send_message(topic='ALL',msg=data)
+                self.send_message(msg=data)
                 self.q.task_done()
             except queue.Empty as e:
                 print('[ERROR] Empty', e)
@@ -44,13 +45,13 @@ class FrameWorker(threading.Thread):
                     frame_selected = frame
                     break
         if frame_selected is None:
-            frame = SaveFrame(
+            frame_selected = SaveFrame(
                 options=self.options,
                 source=data.source
             )
-            frame.init()
-            self.save_frame.append(frame)
-        frame.save_video(data.grabbed, data.frame)
+            frame_selected.init()
+            self.save_frame.append(frame_selected)
+        frame_selected.save_video(data.grabbed, data.frame)
 
     def on_close(self) -> None:
         print('[INFO] closing ...')
@@ -66,20 +67,17 @@ class FrameWorker(threading.Thread):
         except Exception as e:
             print('[ERROR]', e)
 
-    def attach(self, data: SubscriberModel):
+    def attach(self, clazz: SubWorker):
         try:
-            if not data.topic:
-                data.topic = 'ALL'
-            if data.topic not in self.subscribers:
-                self.subscribers[data.topic] = []
-            self.subscribers[data.topic].append(data)
+            if clazz not in self.subscribers:
+                print('subscribiendo')
+                self.subscribers.append(clazz)
         except Exception as e:
             print("[ERROR]", e)
 
-    def detach(self, data: SubscriberModel):
-        self.subscribers.get(data.topic).remove(data)
+    def detach(self, clazz: SubWorker):
+        self.subscribers.remove(clazz)
 
-    def send_message(self, topic: str = 'ALL', msg: ProcessFrameModel = None):
-        if topic in self.subscribers:
-            for item in self.subscribers[topic]:
-                item.clazz.on_message(msg)
+    def send_message(self, msg: ProcessFrameModel = None):
+            for clazz in self.subscribers:
+                clazz.on_message(msg)

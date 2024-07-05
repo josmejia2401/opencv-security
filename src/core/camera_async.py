@@ -80,7 +80,7 @@ class CameraAsync(threading.Thread):
                 print('[ERROR] Exception', e)
 
     def on_close(self):
-        print('[INFO] closing ...')
+        print('[INFO] closing camera async...')
         self.stopEvent.set()
         self.frame_worker.on_close()
         for cam in self.cameras_attach:

@@ -2,7 +2,6 @@ from src.core.sub.sub_worker import SubWorker
 from src.core.models.proccess_frame_model import ProcessFrameModel
 from src.core.camera_async import CameraAsync
 from src.webapp.manage_user import ManageUser
-from src.core.models.subscriber_model import SubscriberModel
 
 import base64
 import cv2
@@ -23,13 +22,8 @@ class ManageFrame(SubWorker):
 
     def init(self):
         self.camera_async.init()
-        attach = SubscriberModel(
-            clazz=self,
-            name='ManageFrame',
-            topic='ALL',
-        )
+        self.camera_async.frame_worker.attach(clazz=self)
         self.camera_async.start()
-        self.camera_async.frame_worker.attach(attach)
 
     def stop(self):
         self.camera_async.on_close()

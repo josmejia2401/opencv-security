@@ -20,27 +20,27 @@ class SaveFrame:
         self.source_name = 'stream-{}'.format(source)
         self.current_day = None
         self.current_time = None
-        self.init()
-
     
     def init(self):
         self.create_stream()
         self.check_day_changed()
         self.check_hour_changed()
         p = self.get_file_name_video()
-        if  Path(p).is_file():
-            try:
-                fourcc = cv2.VideoWriter_fourcc(*self.options.video_format.video_format)
-                self.out = cv2.VideoWriter(filename=p,
-                                            fourcc=fourcc,
-                                            fps=self.options.frame_fps,
-                                            frameSize=(self.options.video_format.video_width, self.options.video_format.video_height),
-                                            isColor=self.options.video_format.video_color)
-                self.release()
-                self.rename_video(p)
-            except Exception as ex:
-                print('[ERROR] init', ex)
-                self.rename_video(p)
+        my_file = Path(p)
+        try:
+            my_file.resolve(strict=True)
+        except FileNotFoundError as ex:
+            print('[ERROR] init', ex)
+        else:
+            self.rename_video(p)
+            #fourcc = cv2.VideoWriter_fourcc(*self.options.video_format.video_format)
+            #self.out = cv2.VideoWriter(filename=p,
+            #                            fourcc=fourcc,
+            #                            fps=self.options.frame_fps,
+            #                            frameSize=(self.options.video_format.video_width, self.options.video_format.video_height),
+            #                            isColor=self.options.video_format.video_color)
+            #self.release()
+            #self.rename_video(p)
         
     def rename_video(self, p):
         ts = datetime.now()
