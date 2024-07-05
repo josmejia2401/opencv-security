@@ -1,15 +1,16 @@
-from flask import Flask, request, render_template
+from flask import Flask, request, render_template, redirect, url_for, flash, session
 from flask_cors import CORS#, cross_origin
+#from flask_login import login_required, current_user
+
 from flask_socketio import SocketIO
-import json
 from src.webapp.manage_frame import ManageFrame
-from src.webapp.models.user_model import UserModel
+from src.webapp.db.manage_db import ManageDB
 
 app = Flask(__name__)
 app.config['SECRET_KEY'] = '12345'
 socketio = SocketIO(app, cors_allowed_origins="*")
 CORS(app)
-
+manage_db = ManageDB()
 manage_frame = ManageFrame(socketio=socketio)
 
 @socketio.on('disconnect')
@@ -19,19 +20,28 @@ def on_disconnect():
         manage_frame.manage_user.remove_session(sid=request.sid)
     else:
         manage_frame.manage_user.remove_user(username=username)
+
+    current_session = session._get_current_object()
+    if current_session.get('logged_in', False) is False or current_session.get('username', 'Guest') != current_session:
+        current_session['logged_in'] = False
+
     socketio.emit('message', { "message": "OK", "username": username, "sid": request.sid})
     print("User disconnected!\nThe users are: ", username)
 
 @socketio.on('connect')
 def on_connect(methods=['GET', 'POST']):
-    username = request.args.get('username') # /a?username=example
-    fullname = request.args.get('fullname') # /a?fullname=example
-    user = UserModel(
-        full_name=fullname,
-        username=username,
-        sid=request.sid
-    )
-    manage_frame.manage_user.add_user(user, request.sid)
+    username = request.args.get('username')
+    current_session = session._get_current_object()
+    print('<<<<<<<<<<<', username, current_session)
+    if current_session.get('logged_in', False) is False or current_session.get('username', 'Guest') != username:
+        current_session['logged_in'] = False
+    
+    print('<<<<<<<<<<<', username, current_session)
+
+
+    if current_session.get('logged_in', False) is False:
+        return
+    manage_frame.manage_user.add_user(username, request.sid)
     print("New user sign in!\nThe users are: ", username)
 
 
@@ -44,13 +54,95 @@ def on_message(message, methods=['GET', 'POST']):
 
 @app.route('/')
 def index():
-    return render_template('index.html')
+    current_session = session._get_current_object()
+    if current_session.get('logged_in', False) is False:
+        current_session['logged_in'] = False
+    return render_template('index.html', current_session=current_session)
+
+@app.route('/profile')
+def profile():
+    current_session = session._get_current_object()
+    if current_session.get('logged_in', False) is False:
+        current_session['logged_in'] = False
+    return render_template('profile.html', current_session=current_session)
+
+@app.route('/login')
+def login():
+    current_session = session._get_current_object()
+    if current_session.get('logged_in', False) is False:
+        current_session['logged_in'] = False
+    return render_template('login.html', current_session=current_session)
+
+@app.route('/login', methods=['POST'])
+def login_post():
+    # login code goes here
+    username = request.form.get('username')
+    password = request.form.get('password')
+    remember = True if request.form.get('remember') else False
+    users = manage_db.find_user_and_pass(username=username, password=password)
+
+    current_session = session._get_current_object()
+
+    # check if the user actually exists
+    # take the user-supplied password, hash it, and compare it to the hashed password in the database
+    if len(users) == 0:
+        flash('Please check your login details and try again.')
+        current_session['logged_in'] = False
+        return redirect(url_for('login', current_session=current_session)) # if the user doesn't exist or password is wrong, reload the page
+    
+    current_session['username'] = username
+    current_session['full_name'] = users[0][1]
+    current_session['logged_in'] = True
+    print('current_session.logged_in', current_session.get('logged_in', False) )
+
+    # if the above check passes, then we know the user has the right credentials
+    return redirect(url_for('profile', current_session=current_session))
+
+@app.route('/signup')
+def signup():
+    current_session = session._get_current_object()
+    if current_session.get('logged_in', False) is False:
+        current_session['logged_in'] = False
+    return render_template('signup.html', current_session=current_session)
+
+@app.route('/signup', methods=['POST'])
+def signup_post():
+    # code to validate and add user to database goes here
+    full_name = request.form.get('full_name')
+    email = request.form.get('email')
+    username = request.form.get('username')
+    password = request.form.get('password')
+    users = manage_db.find_user(username=username)
+
+    current_session = session._get_current_object()
+
+    if len(users) > 0:
+        if current_session.get('logged_in', False) is False:
+            current_session['logged_in'] = False
+        flash('Email address already exists')
+        return redirect(url_for('signup', current_session=current_session))
+    manage_db.create_user(username, full_name, email, password)
+
+    current_session['username'] = username
+    current_session['full_name'] = full_name
+    current_session['logged_in'] = True
+
+    return redirect(url_for('login', current_session=current_session))
+
+@app.route('/logout')
+def logout():
+    current_session = session._get_current_object()
+    current_session['logged_in'] = False
+    return redirect(url_for('index', current_session=current_session))
 
 def main():
     manage_frame.init()
+    manage_db.connect()
+    manage_db.create_all()
 
 def stop():
     manage_frame.stop()
+    manage_db.close_connection()
 
 if __name__ == '__main__':
     manage_frame.init()

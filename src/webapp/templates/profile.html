@@ -1,0 +1,14 @@
+{% extends "base.html" %}
+
+{% block content %}
+<h1 class="title">
+  Welcome, {{ current_session.get('full_name', 'Guest') }}!
+</h1>
+
+<div id="logger">
+  <img id="image"
+      src="https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcTODZZUThEq35sS54ZmtfL5MDmqhB9x5o8Yvg&s"
+      alt="Paris" class="center">
+</div>
+
+{% endblock %}
