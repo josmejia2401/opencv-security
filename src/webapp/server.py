@@ -32,12 +32,8 @@ def on_disconnect():
 def on_connect(methods=['GET', 'POST']):
     username = request.args.get('username')
     current_session = session._get_current_object()
-    print('<<<<<<<<<<<', username, current_session)
     if current_session.get('logged_in', False) is False or current_session.get('username', 'Guest') != username:
         current_session['logged_in'] = False
-    
-    print('<<<<<<<<<<<', username, current_session)
-
 
     if current_session.get('logged_in', False) is False:
         return
@@ -145,5 +141,5 @@ def stop():
     manage_db.close_connection()
 
 if __name__ == '__main__':
-    manage_frame.init()
-    socketio.run(app, port=9090, debug=True)
+    main()
+    socketio.run(app, host='0.0.0.0', port=9090, debug=True)

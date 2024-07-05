@@ -3,76 +3,9 @@
 
 {% block content %}
 <h1 class="title">
-  Flask Login Example
+  OPEN SECURITY
 </h1>
 <h2 class="subtitle">
-  Easy authentication and authorization in Flask.
+  Sistema de seguridad de la familia Mejia Cordoba
 </h2>
 {% endblock %}
-<!-- <!DOCTYPE html>
-<html>
-
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Working with Flask and SocketIO</title>
-    <style>
-        .center {
-            display: block;
-            margin-left: auto;
-            margin-right: auto;
-            width: 50%;
-        }
-    </style>
-</head>
-
-<body>
-    <div id="logger">
-        <img id="image"
-            src="https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcTODZZUThEq35sS54ZmtfL5MDmqhB9x5o8Yvg&s"
-            alt="Paris" class="center">
-    </div>
-
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/socket.io/4.7.5/socket.io.js"
-        integrity="sha512-luMnTJZ7oEchNDZAtQhgjomP1eZefnl82ruTH/3Oj/Yu5qYtwL7+dVRccACS/Snp1lFXq188XFipHKYE75IaQQ=="
-        crossorigin="anonymous" referrerpolicy="no-referrer"></script>
-
-    <script>
-        (function init() {
-
-            function base64ToArrayBuffer(base64) {
-                const binaryString = atob(base64);
-                const bytes = new Uint8Array(binaryString.length);
-                for (var i = 0; i < binaryString.length; i++) {
-                    bytes[i] = binaryString.charCodeAt(i);
-                }
-                return bytes.buffer;
-            }
-
-            const socket = io.connect('http://localhost:9090?username=josem&fullname=jose mejia');
-            const loggerElement = document.getElementById('logger')
-            socket.on('connect', function (payload) {
-                const dataElement = document.createElement('pre');
-                dataElement.innerHTML = "Connected: jose";
-                loggerElement.appendChild(dataElement);
-            });
-
-            socket.on('message', function (payload) {
-                if (payload && payload.frame) {
-                    const textDecoder = new TextDecoder();
-                    const image = document.getElementById("image");
-                    image.src = "data:image/jpg;base64, " + textDecoder.decode(payload.frame);
-                }
-            });
-
-            socket.on('disconnect', function (payload) {
-                const dataElement = document.createElement('pre');
-                dataElement.innerHTML = payload;
-                loggerElement.appendChild(dataElement);
-            });
-        })()
-    </script>
-</body>
-
-</html>
--->

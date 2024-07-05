@@ -2,8 +2,19 @@
 
 {% block content %}
 <h1 class="title">
-  Welcome, {{ current_session.get('full_name', 'Guest') }}!
+  Bienvenido, {{ current_session.get('full_name', 'Guest') }}!
 </h1>
+
+<div class="field">
+  <label class="label">Selecciona la cámara</label>
+  <div class="control">
+    <div class="select">
+      <select>
+        <option value="0">Cámara 0</option>
+      </select>
+    </div>
+  </div>
+</div>
 
 <div id="logger">
   <img id="image"

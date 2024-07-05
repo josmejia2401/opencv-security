@@ -6,7 +6,13 @@
     <!--<meta http-equiv="X-UA-Compatible" content="IE=edge">-->
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <title>Flask Auth Example</title>
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/bulma/0.7.2/css/bulma.min.css" />
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/bulma/1.0.1/css/bulma.min.css"
+        integrity="sha512-dF4b2QV/0kq+qlwefqCyb+edbWZ63ihXhE4A2Pju3u4QyaeFzMChqincJsKYwghbclpLE92jPb9yaz/LQ8aNlg=="
+        crossorigin="anonymous" referrerpolicy="no-referrer" />
+
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/socket.io/4.7.5/socket.io.js"
+        integrity="sha512-luMnTJZ7oEchNDZAtQhgjomP1eZefnl82ruTH/3Oj/Yu5qYtwL7+dVRccACS/Snp1lFXq188XFipHKYE75IaQQ=="
+        crossorigin="anonymous" referrerpolicy="no-referrer"></script>
     <style>
         .center {
             display: block;
@@ -15,9 +21,7 @@
             width: 50%;
         }
     </style>
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/socket.io/4.7.5/socket.io.js"
-        integrity="sha512-luMnTJZ7oEchNDZAtQhgjomP1eZefnl82ruTH/3Oj/Yu5qYtwL7+dVRccACS/Snp1lFXq188XFipHKYE75IaQQ=="
-        crossorigin="anonymous" referrerpolicy="no-referrer"></script>
+
 </head>
 
 <body>
@@ -25,7 +29,7 @@
         <div class="hero-head">
             <nav class="navbar">
                 <div class="container">
-                    <div id="navbarMenuHeroA" class="navbar-menu">
+                    <div id="navbarMenuHeroA" class="navbar-menu is-active">
                         <div class="navbar-end">
                             <a href="{{ url_for('index') }}" class="navbar-item">
                                 Home
@@ -98,6 +102,33 @@
                 loggerElement.appendChild(dataElement);
             });
         })()
+
+
+           /** The jQuery will trigger only at mobile viewport */
+    if (window.matchMedia("(max-width: 767px)").matches) {    
+            const $navDropdowns = document.querySelectorAll(".navbar-item.has-dropdown");
+        if ($navDropdowns.length > 0) {
+            // HIDE THE DROP-DOWN ON THE INITIAL LOAD
+            $navDropdowns.forEach((el) => {
+                const target = el.dataset.target;
+                const $target = document.getElementById(target);
+                $target.style.display = "none";
+        
+            //Register the click event on the dropdown list
+                el.addEventListener("click", () => {
+                    // Get the target from the "data-target" attribute
+                    const target = el.dataset.target;
+                    const $target = document.getElementById(target);
+    
+                    if ($target.style.display === "block") {
+                        $target.style.display = "none";
+                    } else {
+                        $target.style.display = "block";
+                    }
+                });
+            });
+        }
+}
     </script>
 </body>
 
