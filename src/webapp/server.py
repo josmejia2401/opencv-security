@@ -126,6 +126,15 @@ def logout():
     current_session['logged_in'] = False
     return redirect(url_for('index', current_session=current_session))
 
+@app.route('/cameras_available')
+def cameras_available():
+    return manage_frame.camera_async.cameras_available
+
+@app.route('/selected_cam')
+def selected_cam():
+    selected = request.args.get('selected') # /a?selected=0
+    return
+
 def main():
     manage_frame.init()
     manage_db.connect()

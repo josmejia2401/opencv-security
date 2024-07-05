@@ -13,6 +13,8 @@
     <script src="https://cdnjs.cloudflare.com/ajax/libs/socket.io/4.7.5/socket.io.js"
         integrity="sha512-luMnTJZ7oEchNDZAtQhgjomP1eZefnl82ruTH/3Oj/Yu5qYtwL7+dVRccACS/Snp1lFXq188XFipHKYE75IaQQ=="
         crossorigin="anonymous" referrerpolicy="no-referrer"></script>
+
+        <script type="text/javascript" src="/static/services.js"></script>
     <style>
         .center {
             display: block;
@@ -108,6 +110,8 @@
                 dataElement.innerHTML = payload;
                 loggerElement.appendChild(dataElement);
             });
+
+            get_cameras_available();
         })()
 
 
