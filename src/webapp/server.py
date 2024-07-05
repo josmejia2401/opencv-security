@@ -1,6 +1,8 @@
 from flask import Flask, request, render_template, redirect, url_for, flash, session, Response
 from flask_cors import CORS
 
+import json
+
 from flask_socketio import SocketIO
 from src.webapp.manage_frame import ManageFrame
 from src.webapp.db.manage_db import ManageDB
@@ -135,6 +137,27 @@ def selected_cam():
     selected = request.args.get('selected') # /a?selected=0
     print('Cam selected', selected)
     manage_frame.selected_cam = int(selected)
+    return Response(
+    response='ok',
+    status=200,
+)
+
+@app.route('/dimensions')
+def dimensions():
+    dimensions = ['320x240', '640x480', '800x480', '1024x600', '1024x768', '1440x900', '1920x1200', '1280x720', '1920x1080', '768x576', '720x480']
+    return Response(
+    response=json.dumps(dimensions),
+    status=200,
+    headers=dict({
+        "content-type": "application/json"
+    })
+)
+
+@app.route('/selected_dim')
+def selected_selected_dimcam():
+    selected = request.args.get('selected') # /a?selected=0
+    print('Dim selected', selected)
+    manage_frame.selected_dim = selected
     return Response(
     response='ok',
     status=200,

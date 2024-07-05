@@ -5,7 +5,8 @@
   Bienvenido, {{ current_session.get('full_name', 'Guest') }}!
 </h1>
 
-<div class="field">
+<div style="width: 100%;" class="columns is-mobile is-centered">
+<div class="field" class="column is-half">
   <label class="label">Selecciona la cámara</label>
   <div class="control">
     <div class="select">
@@ -14,6 +15,18 @@
       </select>
     </div>
   </div>
+</div>
+
+<div class="field" class="column is-half">
+  <label class="label">Selecciona la dimensión</label>
+  <div class="control">
+    <div class="select">
+      <select id="dimensionsDropdown" name="dimensionsDropdown" onchange="selecte_dimensions(this)">
+        <option value="0">Cámara 0</option>
+      </select>
+    </div>
+  </div>
+</div>
 </div>
 
 <div id="logger">

@@ -87,8 +87,10 @@
                 return bytes.buffer;
             }
 
+            const current_host = `${window.location.protocol}//${window.location.host}`
+            console.log(current_host)
             //const socket = io.connect(`http://192.168.20.46:9090?username=${username}`);
-            const socket = io.connect(`http://localhost:9090?username=${username}`);
+            const socket = io.connect(`${current_host}/?username=${username}`);
             const loggerElement = document.getElementById('logger')
             socket.on('connect', function (payload) {
                 //const dataElement = document.createElement('pre');
@@ -112,6 +114,7 @@
             });
 
             get_cameras_available();
+            get_dimensions();
         })()
 
 

@@ -14,6 +14,7 @@ class ManageFrame(SubWorker):
     _camera_async: CameraAsync
     _manage_user: ManageUser
     _selected_cam: int
+    _selected_dim: str
 
     def __init__(self, socketio: SocketIO):
         super().__init__()
@@ -26,6 +27,7 @@ class ManageFrame(SubWorker):
         self.camera_async.frame_worker.attach(clazz=self)
         self.camera_async.start()
         self.selected_cam = 0
+        self.selected_dim = '640x480'
 
     def stop(self):
         self.camera_async.on_close()
@@ -33,7 +35,14 @@ class ManageFrame(SubWorker):
     def on_message(self, message: ProcessFrameModel) -> None:
         if self.manage_user.size() > 0 and message.frame is not None and message.source == self.selected_cam:
             try:
-                _, buffer = cv2.imencode('.jpg', message.frame)
+                width = 480
+                heigth = 320
+                if self.selected_dim:
+                    width = int(self.selected_dim.split("x")[0])
+                    heigth = int(self.selected_dim.split("x")[1])
+                
+                frame = cv2.resize(message.frame, (width,heigth))
+                _, buffer = cv2.imencode('.jpg', frame)
                 jpg_as_text = base64.b64encode(buffer)
                 a_dict = {'frame': jpg_as_text, 'source': message.source}
                 self.socketio.emit('message', a_dict)
@@ -55,3 +64,11 @@ class ManageFrame(SubWorker):
     @selected_cam.setter
     def selected_cam(self, selected_cam):
         self._selected_cam = selected_cam
+
+    @property
+    def selected_dim(self):
+        return self._selected_dim
+    
+    @selected_dim.setter
+    def selected_dim(self, selected_dim):
+        self._selected_dim = selected_dim
