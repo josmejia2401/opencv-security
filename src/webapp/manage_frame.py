@@ -13,6 +13,7 @@ class ManageFrame(SubWorker):
     socketio: SocketIO
     _camera_async: CameraAsync
     _manage_user: ManageUser
+    _selected_cam: int
 
     def __init__(self, socketio: SocketIO):
         super().__init__()
@@ -24,12 +25,13 @@ class ManageFrame(SubWorker):
         self.camera_async.init()
         self.camera_async.frame_worker.attach(clazz=self)
         self.camera_async.start()
+        self.selected_cam = 0
 
     def stop(self):
         self.camera_async.on_close()
 
     def on_message(self, message: ProcessFrameModel) -> None:
-        if self.manage_user.size() > 0 and message.frame is not None:
+        if self.manage_user.size() > 0 and message.frame is not None and message.source == self.selected_cam:
             try:
                 _, buffer = cv2.imencode('.jpg', message.frame)
                 jpg_as_text = base64.b64encode(buffer)
@@ -45,3 +47,11 @@ class ManageFrame(SubWorker):
     @property
     def manage_user(self):
         return self._manage_user
+    
+    @property
+    def selected_cam(self):
+        return self._selected_cam
+    
+    @selected_cam.setter
+    def selected_cam(self, selected_cam):
+        self._selected_cam = selected_cam

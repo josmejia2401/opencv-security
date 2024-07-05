@@ -1,4 +1,4 @@
-from flask import Flask, request, render_template, redirect, url_for, flash, session
+from flask import Flask, request, render_template, redirect, url_for, flash, session, Response
 from flask_cors import CORS
 
 from flask_socketio import SocketIO
@@ -133,7 +133,12 @@ def cameras_available():
 @app.route('/selected_cam')
 def selected_cam():
     selected = request.args.get('selected') # /a?selected=0
-    return
+    print('Cam selected', selected)
+    manage_frame.selected_cam = int(selected)
+    return Response(
+    response='ok',
+    status=200,
+)
 
 def main():
     manage_frame.init()
