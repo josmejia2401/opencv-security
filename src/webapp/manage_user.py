@@ -1,19 +1,27 @@
+from src.webapp.models.config_user_model import ConfigUserModel
 
 class ManageUser:
-
-    users: dict[str, list[str]]
+    users: dict[str, ConfigUserModel]
     
     def __init__(self) -> None:
         self.users = {}
 
+
     def add_user(self, username: str, sid = str):
         if username in self.users:
-            if sid not in self.users[username]:
-                self.users[username].append(sid)
+            if self.users[username].sid is None:
+                self.users[username].sid = []
+            if sid not in self.users[username].sid:
+                self.users[username].sid.append(sid)
         else:
-            sid = []
-            sid.append(sid)
-            self.users[username] = sid        
+            sid_list = []
+            sid_list.append(sid)
+            self.users[username] = ConfigUserModel(
+                dimension='640x480',
+                sid=sid_list,
+                source=0,
+                username=username
+            )    
     
     def remove_user(self, username):
         if username in self.users:
@@ -21,11 +29,26 @@ class ManageUser:
 
     def remove_session(self, sid):
         for user in self.users:
-            if sid in user:
-                del user[sid]
+            if sid in user.sid:
+                del user.sid[sid]
 
     def clear(self):
         self.users = {}
 
     def size(self):
         return len(self.users)
+    
+    def get_session_from_user(self, username):
+        if username in self.users and len(self.users[username].sid) > 0:
+            return self.users[username].sid[0]
+        return None
+    
+    def add_source(self, username, source):
+        if username in self.users:
+            self.users[username].source = source
+            print('add_source', username, source)
+
+    def add_dimension(self, username, dimension):
+        if username in self.users:
+            self.users[username].dimension = dimension
+            print('add_dimension', username, dimension)

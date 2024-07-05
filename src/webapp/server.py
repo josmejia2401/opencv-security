@@ -135,8 +135,11 @@ def cameras_available():
 @app.route('/selected_cam')
 def selected_cam():
     selected = request.args.get('selected') # /a?selected=0
-    print('Cam selected', selected)
-    manage_frame.selected_cam = int(selected)
+    current_session = session._get_current_object()
+    username = current_session.get('username', None)
+    print('Cam selected', username, selected)
+
+    manage_frame.manage_user.add_source(username=username, source=selected)
     return Response(
     response='ok',
     status=200,
@@ -144,7 +147,19 @@ def selected_cam():
 
 @app.route('/dimensions')
 def dimensions():
-    dimensions = ['320x240', '640x480', '800x480', '1024x600', '1024x768', '1440x900', '1920x1200', '1280x720', '1920x1080', '768x576', '720x480']
+    dimensions = [
+        '320x240',
+        '640x480',
+        '720x480',
+        '768x576',
+        '800x480',
+        '1024x600',
+        '1024x768',
+        '1280x720',
+        '1440x900',
+        '1920x1080',
+        '1920x1200'
+    ]
     return Response(
     response=json.dumps(dimensions),
     status=200,
@@ -156,8 +171,11 @@ def dimensions():
 @app.route('/selected_dim')
 def selected_selected_dimcam():
     selected = request.args.get('selected') # /a?selected=0
-    print('Dim selected', selected)
-    manage_frame.selected_dim = selected
+    current_session = session._get_current_object()
+    username = current_session.get('username', None)
+    print('Dim selected', username, selected)
+
+    manage_frame.manage_user.add_dimension(username=username, dimension=selected)
     return Response(
     response='ok',
     status=200,
