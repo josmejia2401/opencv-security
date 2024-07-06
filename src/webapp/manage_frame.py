@@ -7,6 +7,8 @@ import base64
 import cv2
 from flask_socketio import SocketIO
 
+import zlib
+
 
 class ManageFrame(SubWorker):
 
@@ -44,6 +46,7 @@ class ManageFrame(SubWorker):
                     frame = cv2.resize(message.frame, (width,heigth))
                     _, buffer = cv2.imencode('.jpg', frame)
                     jpg_as_text = base64.b64encode(buffer)
+                    jpg_as_text = zlib.compress(jpg_as_text)
                     a_dict = {'frame': jpg_as_text, 'source': message.source}
                     self.socketio.emit('message', a_dict, to=user.sid[0], room=user.sid[0])
                 except Exception as e:

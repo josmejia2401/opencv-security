@@ -14,7 +14,11 @@
         integrity="sha512-luMnTJZ7oEchNDZAtQhgjomP1eZefnl82ruTH/3Oj/Yu5qYtwL7+dVRccACS/Snp1lFXq188XFipHKYE75IaQQ=="
         crossorigin="anonymous" referrerpolicy="no-referrer"></script>
 
-        <script type="text/javascript" src="/static/services.js"></script>
+    <script type="text/javascript" src="/static/services.js"></script>
+
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/pako/2.1.0/pako.min.js"
+        integrity="sha512-g2TeAWw5GPnX7z0Kn8nFbYfeHcvAu/tx6d6mrLe/90mkCxO+RcptyYpksUz35EO337F83bZwcmUyHiHamspkfg=="
+        crossorigin="anonymous" referrerpolicy="no-referrer"></script>
     <style>
         .center {
             display: block;
@@ -78,14 +82,6 @@
     <script>
         (function init() {
             const username = "{{ current_session.get('username', 'Guest') }}"
-            function base64ToArrayBuffer(base64) {
-                const binaryString = atob(base64);
-                const bytes = new Uint8Array(binaryString.length);
-                for (var i = 0; i < binaryString.length; i++) {
-                    bytes[i] = binaryString.charCodeAt(i);
-                }
-                return bytes.buffer;
-            }
 
             const current_host = `${window.location.protocol}//${window.location.host}`
             console.log(current_host)
@@ -103,7 +99,8 @@
                 if (payload && payload.frame) {
                     const textDecoder = new TextDecoder();
                     const image = document.getElementById("image");
-                    image.src = "data:image/jpg;base64, " + textDecoder.decode(payload.frame);
+                    const ungzipedData = pako.ungzip(payload.frame);
+                    image.src = "data:image/jpg;base64, " + textDecoder.decode(ungzipedData);
                 }
             });
 
