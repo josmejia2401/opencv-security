@@ -141,8 +141,6 @@ def selected_cam():
     selected = request.args.get('selected') # /a?selected=0
     current_session = session._get_current_object()
     username = current_session.get('username', None)
-    print('Cam selected', username, selected)
-
     manage_frame.manage_user.add_source(username=username, source=selected)
     return Response(
     response='ok',
@@ -177,8 +175,6 @@ def selected_selected_dimcam():
     selected = request.args.get('selected') # /a?selected=0
     current_session = session._get_current_object()
     username = current_session.get('username', None)
-    print('Dim selected', username, selected)
-
     manage_frame.manage_user.add_dimension(username=username, dimension=selected)
     return Response(
     response='ok',
