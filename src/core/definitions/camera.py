@@ -44,9 +44,7 @@ class Camera(ABC):
 
     def init_main(self) -> None:
         print('[INFO][{}] starting ...'.format(self.name))
-
         self.__init_cam()
-
         self.stopEvent = threading.Event()
         self.thread = threading.Thread(target=self.video_loop, args=())
         self.thread.start()
@@ -55,6 +53,7 @@ class Camera(ABC):
         if not self.stream.isOpened():
             raise NameError('Error reading frame')
         grabbed, frame = self.stream.read()
+        frame = cv2.flip(frame, 180)
         return (grabbed, frame)
 
     def stop(self) -> None:

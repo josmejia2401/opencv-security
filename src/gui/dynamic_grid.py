@@ -56,6 +56,7 @@ class DynamicGrid(tk.Frame):
             else:
                 frameBox.panel.configure(image=image)
                 frameBox.panel.image = image
+            # update
             self.boxes[message.source] = frameBox
 
     def on_close(self):
