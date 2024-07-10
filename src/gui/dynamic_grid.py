@@ -64,7 +64,5 @@ class DynamicGrid(tk.Frame):
         for box in self.boxes:
             try:
                 self.boxes[box].box.quit()
-                self.boxes[box].box.destroy()
             except: pass
         self.quit()
-        self.destroy()

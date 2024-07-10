@@ -81,7 +81,6 @@ class Kernel:
         self.camera_async.on_close()
         self.dynamic_grid.on_close()
         self.root.quit()
-        self.root.destroy()
 
     @property
     def camera_async(self):
