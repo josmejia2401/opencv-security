@@ -33,9 +33,9 @@ class CameraAsync(threading.Thread):
         self._frame_worker = None
         self.options = None
         self.cameras_attach = []
+        self.cameras_available = cam_list()
 
     def init(self) -> None:
-        self.cameras_available = cam_list()
         self.init_options()
         self.init_camera()
         self.init_workers()

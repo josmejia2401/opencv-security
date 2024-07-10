@@ -14,3 +14,5 @@
 - visualizador multimedia
 - config: resolucion de videos (ancho x alto)
 - formato de video
+- casa esta sola (mandar alerta si detecta personas o movimientos)
+- tensorflow modelo para reconocer armas y rostros
