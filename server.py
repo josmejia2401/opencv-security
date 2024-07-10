@@ -1,5 +1,6 @@
+#!/usr/bin/env python3
+#!/usr/bin/python3.12.4
 from src.webapp.server import app, main, socketio, stop
-
 
 if __name__ == '__main__':
     try:

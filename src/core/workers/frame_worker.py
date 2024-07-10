@@ -14,7 +14,6 @@ class FrameWorker(threading.Thread):
     q: queue.Queue
     save_frame: list[type[SaveFrame]]
     options: FrameModel
-    #subscribers: dict[str, list[type[SubscriberModel]]]
     subscribers: list[type[SubWorker]]
 
     def __init__(self, q, options, *args, **kwargs):
@@ -70,7 +69,6 @@ class FrameWorker(threading.Thread):
     def attach(self, clazz: SubWorker):
         try:
             if clazz not in self.subscribers:
-                print('subscribiendo')
                 self.subscribers.append(clazz)
         except Exception as e:
             print("[ERROR]", e)
@@ -79,5 +77,5 @@ class FrameWorker(threading.Thread):
         self.subscribers.remove(clazz)
 
     def send_message(self, msg: ProcessFrameModel = None):
-            for clazz in self.subscribers:
-                clazz.on_message(msg)
+        for clazz in self.subscribers:
+            clazz.on_message(msg)

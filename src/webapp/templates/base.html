@@ -3,9 +3,9 @@
 
 <head>
     <meta charset="utf-8">
-    <!--<meta http-equiv="X-UA-Compatible" content="IE=edge">-->
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1">
-    <title>Flask Auth Example</title>
+    <title>Open Security</title>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/bulma/1.0.1/css/bulma.min.css"
         integrity="sha512-dF4b2QV/0kq+qlwefqCyb+edbWZ63ihXhE4A2Pju3u4QyaeFzMChqincJsKYwghbclpLE92jPb9yaz/LQ8aNlg=="
         crossorigin="anonymous" referrerpolicy="no-referrer" />
@@ -19,6 +19,7 @@
     <script src="https://cdnjs.cloudflare.com/ajax/libs/pako/2.1.0/pako.min.js"
         integrity="sha512-g2TeAWw5GPnX7z0Kn8nFbYfeHcvAu/tx6d6mrLe/90mkCxO+RcptyYpksUz35EO337F83bZwcmUyHiHamspkfg=="
         crossorigin="anonymous" referrerpolicy="no-referrer"></script>
+
     <style>
         .center {
             display: block;
@@ -78,68 +79,42 @@
         </div>
     </section>
 
-
     <script>
         (function init() {
-            const username = "{{ current_session.get('username', 'Guest') }}"
+            const textDecoder = new TextDecoder();
+            const username = "{{ current_session.get('username', 'Guest') }}";
+            const current_host = `${window.location.protocol}//${window.location.host}`;
+            console.log(current_host);
 
-            const current_host = `${window.location.protocol}//${window.location.host}`
-            console.log(current_host)
-            //const socket = io.connect(`http://192.168.20.46:9090?username=${username}`);
             const socket = io.connect(`${current_host}/?username=${username}`);
             const loggerElement = document.getElementById('logger')
-            socket.on('connect', function (payload) {
-                //const dataElement = document.createElement('pre');
-                //dataElement.innerHTML = "Connected: jose";
-                //loggerElement.appendChild(dataElement);
-                console.log("conected", payload);
+            socket.on('connect', function () {
+                const dataElement = document.createElement('pre');
+                dataElement.innerHTML = `Conectado ${username}`;
+                loggerElement.appendChild(dataElement);
             });
 
             socket.on('message', function (payload) {
-                if (payload && payload.frame) {
-                    const textDecoder = new TextDecoder();
+                console.log("message", payload);
+            });
+
+            socket.on('frame', function (frame) {
+                if (frame) {
                     const image = document.getElementById("image");
-                    const ungzipedData = pako.ungzip(payload.frame);
+                    const ungzipedData = pako.ungzip(frame);
                     image.src = "data:image/jpg;base64, " + textDecoder.decode(ungzipedData);
                 }
             });
 
             socket.on('disconnect', function (payload) {
                 const dataElement = document.createElement('pre');
-                dataElement.innerHTML = payload;
+                dataElement.innerHTML = JSON.stringify(payload);
                 loggerElement.appendChild(dataElement);
             });
 
             get_cameras_available();
             get_dimensions();
-        })()
-
-
-        /** The jQuery will trigger only at mobile viewport */
-        if (window.matchMedia("(max-width: 767px)").matches) {
-            const $navDropdowns = document.querySelectorAll(".navbar-item.has-dropdown");
-            if ($navDropdowns.length > 0) {
-                // HIDE THE DROP-DOWN ON THE INITIAL LOAD
-                $navDropdowns.forEach((el) => {
-                    const target = el.dataset.target;
-                    const $target = document.getElementById(target);
-                    $target.style.display = "none";
-
-                    //Register the click event on the dropdown list
-                    el.addEventListener("click", () => {
-                        // Get the target from the "data-target" attribute
-                        const target = el.dataset.target;
-                        const $target = document.getElementById(target);
-
-                        if ($target.style.display === "block") {
-                            $target.style.display = "none";
-                        } else {
-                            $target.style.display = "block";
-                        }
-                    });
-                });
-            }
-        }
+        })();
     </script>
 </body>
 

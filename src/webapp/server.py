@@ -1,16 +1,24 @@
+#!/usr/bin/env python3
+#!/usr/bin/python3.12.4
 from flask import Flask, request, render_template, redirect, url_for, flash, session, Response
 from flask_cors import CORS
-
-import json
-
 from flask_socketio import SocketIO
+import json
+from flask_compress import Compress
+
 from src.webapp.manage_frame import ManageFrame
 from src.webapp.db.manage_db import ManageDB
 
+
 app = Flask(__name__)
 app.config['SECRET_KEY'] = '12345'
-socketio = SocketIO(app, cors_allowed_origins="*")
+
+compress = Compress()
+compress.init_app(app)
+
+socketio = SocketIO(app, cors_allowed_origins="*", async_mode='threading')
 CORS(app)
+
 manage_db = ManageDB()
 manage_frame = ManageFrame(socketio=socketio)
 
@@ -21,13 +29,11 @@ def on_disconnect():
         manage_frame.manage_user.remove_session(sid=request.sid)
     else:
         manage_frame.manage_user.remove_user(username=username)
-        
     current_session = session._get_current_object()
     if current_session.get('logged_in', False) is False or current_session.get('username', 'Guest') != current_session:
         current_session['logged_in'] = False
-
     socketio.emit('message', { "message": "OK", "username": username, "sid": request.sid})
-    print("User disconnected!\nThe users are: ", username)
+    print("User disconnected: ", username)
 
 @socketio.on('connect')
 def on_connect(methods=['GET', 'POST']):
@@ -35,11 +41,10 @@ def on_connect(methods=['GET', 'POST']):
     current_session = session._get_current_object()
     if current_session.get('logged_in', False) is False or current_session.get('username', 'Guest') != username:
         current_session['logged_in'] = False
-
     if current_session.get('logged_in', False) is False:
         return
     manage_frame.manage_user.add_user(username, request.sid)
-    print("========= New user sign in! =========\nThe users are: ", username)
+    print("User sign in: ", username)
 
 
 @socketio.on('message')
@@ -74,7 +79,7 @@ def login():
 def login_post():
     username = request.form.get('username')
     password = request.form.get('password')
-    remember = True if request.form.get('remember') else False
+    #remember = True if request.form.get('remember') else False
     users = manage_db.find_user_and_pass(username=username, password=password)
 
     current_session = session._get_current_object()
@@ -82,7 +87,7 @@ def login_post():
     if len(users) == 0:
         flash('Please check your login details and try again.')
         current_session['logged_in'] = False
-        return redirect(url_for('login', current_session=current_session)) # if the user doesn't exist or password is wrong, reload the page
+        return redirect(url_for('login', current_session=current_session))
     
     current_session['username'] = username
     current_session['full_name'] = users[0][1]
@@ -100,7 +105,6 @@ def signup():
 
 @app.route('/signup', methods=['POST'])
 def signup_post():
-    # code to validate and add user to database goes here
     full_name = request.form.get('full_name')
     email = request.form.get('email')
     username = request.form.get('username')

@@ -1,3 +1,5 @@
+#!/usr/bin/env python3
+#!/usr/bin/python3.12.4
 from src.webapp.models.config_user_model import ConfigUserModel
 
 class ManageUser:
@@ -46,9 +48,9 @@ class ManageUser:
     def add_source(self, username, source):
         if username in self.users:
             self.users[username].source = source
-            print('add_source', username, source)
+            print('[INFO] add_source', username, source)
 
     def add_dimension(self, username, dimension):
         if username in self.users:
             self.users[username].dimension = dimension
-            print('add_dimension', username, dimension)
+            print('[INFO] add_dimension', username, dimension)

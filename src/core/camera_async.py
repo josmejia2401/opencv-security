@@ -108,7 +108,3 @@ class CameraAsync(threading.Thread):
     @property
     def q(self):
         return self._q
-
-    #@q.setter
-    #def q(self, q):
-    #    self._q = q
